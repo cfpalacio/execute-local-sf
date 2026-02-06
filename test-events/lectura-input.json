@@ -1,0 +1,46 @@
+{
+  "lotes": [1],
+  "tamanoChunk": 500,
+  "periodoLiquidacion": "2026-02",
+  "parametros": {
+    "salarioMinimo": 2000000,
+    "formula": "originValue * exchangeRate / numberOfPayments",
+    "porcentajeMaximoEndeudamiento": 50,
+    "monedaDefault": "COP",
+    "tasaCambioDefault": 1.0,
+    "configuracionBaseGravable": {
+      "limites": [
+        {"smmlvMin": 0.0, "smmlvMax": 25.0, "porcentajeDescuento": 4.0}
+      ]
+    },
+    "parametrosSeguridadSocial": {
+      "EPS": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0}],
+          "rounding": 100.0
+        }
+      },
+      "AFP": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0}],
+          "rounding": 100.0
+        }
+      },
+      "FSP": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 4.0, "smmlvMax": 16.0, "discountPercentage": 1.0}],
+          "rounding": 100.0
+        }
+      }
+    },
+    "parametrosCajaCompensacion": {
+      "rules": {
+        "smmlvMax": 4.0,
+        "rounding": 100.0
+      }
+    }
+  }
+}

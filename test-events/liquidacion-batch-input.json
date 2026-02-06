@@ -1,0 +1,164 @@
+{
+  "batchInfo": {
+    "idTraza": "BATCH-2026-02-04-001",
+    "batch": "BATCH1",
+    "periodoLiquidacion": "2026-02"
+  },
+
+  "parametrosComunes": {
+    "salarioMinimo": 2000000,
+    "formula": "originValue * exchangeRate / numberOfPayments",
+    "porcentajeMaximoEndeudamiento": 50,
+    "monedaDefault": "COP",
+    "tasaCambioDefault": 1.0,
+    "configuracionBaseGravable": {
+      "limites": [
+        {"smmlvMin": 0.0, "smmlvMax": 25.0, "porcentajeDescuento": 4.0}
+      ]
+    },
+    "parametrosSeguridadSocial": {
+      "EPS": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0}],
+          "rounding": 100.0
+        }
+      },
+      "AFP": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0}],
+          "rounding": 100.0
+        }
+      },
+      "FSP": {
+        "active": true,
+        "rules": {
+          "limits": [{"smmlvMin": 4.0, "smmlvMax": 16.0, "discountPercentage": 1.0}],
+          "rounding": 100.0
+        }
+      }
+    },
+    "parametrosCajaCompensacion": {
+      "rules": {
+        "smmlvMax": 4.0,
+        "rounding": 100.0
+      }
+    }
+  },
+
+  "liquidaciones": [
+    {
+      "item": "ITEM1",
+      "participante": {
+        "idParticipante": "rtfjk",
+        "idSolicitudPago": "afedd",
+        "periodicidad": "MENSUAL",
+        "rol": "PENSIONADO",
+        "esPensionRegular": true
+      },
+      "ingresos": {
+        "traceId": "BATCH-2026-02-04-001-ITEM1",
+        "liquidationPeriod": "2026-02",
+        "formula": "originValue * exchangeRate / numberOfPayments",
+        "additionalIncomeLocal": 0,
+        "incomes": [
+          {
+            "incomeId": "ING-001",
+            "type": "MESADA_PENSIONAL",
+            "participationType": "PORCENTAJE",
+            "participationPercentage": 50.0,
+            "baseParticipationValue": 1700000,
+            "grossParticipationValue": 850000,
+            "exchangeRate": 1.0,
+            "numberOfPayments": 1,
+            "actualPaymentNumber": 1,
+            "startDate": "2026-02-01T00:00:00Z",
+            "endDate": "2026-02-28T23:59:59Z"
+          }
+        ]
+      },
+      "deduccionesSeguridadSocial": [
+        {
+          "type": "EPS",
+          "deductionId": "DED-EPS-001",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0
+        },
+        {
+          "type": "AFP",
+          "deductionId": "DED-AFP-001",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0
+        }
+      ],
+      "deduccionesNegocio": [
+        {
+          "deductionId": "DED-LIB-001",
+          "type": "LIBRANZA",
+          "participantType": "VALOR",
+          "percentage": null,
+          "value": 400000,
+          "exchangeRate": 1.0,
+          "numberOfPayments": 1,
+          "actualPaymentNumber": 1,
+          "isAdditional": false
+        }
+      ]
+    },
+    {
+      "item": "ITEM2",
+      "participante": {
+        "idParticipante": "xyz123",
+        "idSolicitudPago": "bcdff",
+        "periodicidad": "MENSUAL",
+        "rol": "PENSIONADO",
+        "esPensionRegular": true
+      },
+      "ingresos": {
+        "traceId": "BATCH-2026-02-04-001-ITEM2",
+        "liquidationPeriod": "2026-02",
+        "formula": "originValue * exchangeRate / numberOfPayments",
+        "additionalIncomeLocal": 100000,
+        "incomes": [
+          {
+            "incomeId": "ING-002",
+            "type": "MESADA_PENSIONAL",
+            "participationType": "VALOR",
+            "participationPercentage": null,
+            "baseParticipationValue": 2500000,
+            "grossParticipationValue": 2500000,
+            "exchangeRate": 1.0,
+            "numberOfPayments": 1,
+            "actualPaymentNumber": 1,
+            "startDate": "2026-02-01T00:00:00Z",
+            "endDate": "2026-02-28T23:59:59Z"
+          }
+        ]
+      },
+      "deduccionesSeguridadSocial": [
+        {
+          "type": "EPS",
+          "deductionId": "DED-EPS-002",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0
+        },
+        {
+          "type": "AFP",
+          "deductionId": "DED-AFP-002",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0
+        }
+      ],
+      "deduccionesNegocio": []
+    }
+  ]
+}

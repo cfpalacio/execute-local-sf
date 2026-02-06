@@ -1,0 +1,523 @@
+{
+  "Comment": "SmartPay - Payroll Liquidation Flow - Simplified 2-Level Map",
+  "StartAt": "ReadBatchesFromDB",
+  "States": {
+    "ReadBatchesFromDB": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${LambdaLecturaArn}",
+        "Payload.$": "$"
+      },
+      "ResultPath": "$.lecturaResult",
+      "ResultSelector": {
+        "body.$": "$.Payload"
+      },
+      "Next": "ValidateLecturaResult",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "HandleLecturaError"
+        }
+      ]
+    },
+
+    "ValidateLecturaResult": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.lecturaResult.body.success",
+          "BooleanEquals": false,
+          "Next": "HandleLecturaError"
+        }
+      ],
+      "Default": "ProcessChunks"
+    },
+
+    "ProcessChunks": {
+      "Type": "Map",
+      "ItemsPath": "$.lecturaResult.body.chunks",
+      "Parameters": {
+        "chunkKey.$": "$$.Map.Item.Value",
+        "parametros.$": "$.lecturaResult.body.parametros",
+        "periodoLiquidacion.$": "$.lecturaResult.body.periodoLiquidacion"
+      },
+      "MaxConcurrency": 1,
+      "Iterator": {
+        "StartAt": "GetChunkFromDynamo",
+        "States": {
+          "GetChunkFromDynamo": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+              "FunctionName": "${LambdaLecturaChunkArn}",
+              "Payload": {
+                "PK.$": "$.chunkKey.PK",
+                "SK.$": "$.chunkKey.SK"
+              }
+            },
+            "ResultPath": "$.chunkData",
+            "ResultSelector": {
+              "body.$": "States.StringToJson($.Payload.body)"
+            },
+            "Next": "ProcessParticipants",
+            "Retry": [
+              {
+                "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                "IntervalSeconds": 2,
+                "MaxAttempts": 3,
+                "BackoffRate": 2
+              }
+            ]
+          },
+
+          "ProcessParticipants": {
+            "Type": "Map",
+            "ItemsPath": "$.chunkData.body.participantes",
+            "Parameters": {
+              "participantData.$": "$$.Map.Item.Value",
+              "batchId.$": "$.chunkKey.batchId",
+              "chunkId.$": "$.chunkKey.chunkId",
+              "itemIndex.$": "$$.Map.Item.Index",
+              "parametros.$": "$.parametros",
+              "periodoLiquidacion.$": "$.periodoLiquidacion",
+              "totalParticipantes.$": "$.chunkData.body.totalParticipantes"
+            },
+            "MaxConcurrency": 1,
+            "Iterator": {
+              "StartAt": "PrepareParticipantData",
+              "States": {
+                "PrepareParticipantData": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "idTraza.$": "States.Format('BATCH-{}-CHUNK-{}-ITEM-{}', $.batchId, $.chunkId, $.itemIndex)",
+                    "batch.$": "$.batchId",
+                    "item.$": "States.Format('{}-{}', $.chunkId, $.itemIndex)",
+                    "periodoLiquidacion.$": "$.periodoLiquidacion",
+                    "participante.$": "$.participantData.participante",
+                    "parametros.$": "$.parametros",
+                    "configuracionBaseGravable.$": "$.parametros.configuracionBaseGravable",
+                    "ingresos.$": "$.participantData.ingresos",
+                    "deduccionesSeguridadSocial.$": "$.participantData.deduccionesSeguridadSocial",
+                    "deduccionesNegocio.$": "$.participantData.deduccionesNegocio",
+                    "parametrosSeguridadSocial.$": "$.parametros.parametrosSeguridadSocial",
+                    "parametrosCajaCompensacion.$": "$.parametros.parametrosCajaCompensacion",
+                    "chunkId.$": "$.chunkId",
+                    "totalParticipantes.$": "$.totalParticipantes"
+                  },
+                  "Next": "CalculateIncome"
+                },
+
+                "CalculateIncome": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaCalculoIngresosArn}",
+                    "Payload": {
+                      "path": "/gross-value",
+                      "body": {
+                        "traceId.$": "$.idTraza",
+                        "liquidationPeriod.$": "$.periodoLiquidacion",
+                        "formula.$": "$.parametros.formula",
+                        "incomes.$": "$.ingresos.incomes",
+                        "additionalIncomeLocal.$": "$.ingresos.additionalIncomeLocal"
+                      }
+                    }
+                  },
+                  "ResultPath": "$.incomeResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "ValidateIncomeResult",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "ValidateIncomeResult": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.incomeResult.body.success",
+                      "BooleanEquals": false,
+                      "Next": "HandleBusinessErrorItem"
+                    }
+                  ],
+                  "Default": "PrepareTaxableBase"
+                },
+
+                "PrepareTaxableBase": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "traceId.$": "$.idTraza",
+                    "grossSalary.$": "$.incomeResult.body.grossValueLocalTotal",
+                    "grossPaymentValue.$": "$.incomeResult.body.grossValueLocalTotal",
+                    "minimumSalary.$": "$.parametros.salarioMinimo",
+                    "configuration.$": "$.configuracionBaseGravable"
+                  },
+                  "ResultPath": "$.taxableBaseInput",
+                  "Next": "CalculateTaxableBase"
+                },
+
+                "CalculateTaxableBase": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaCalculoBaseGravableArn}",
+                    "Payload": {
+                      "body.$": "States.JsonToString($.taxableBaseInput)"
+                    }
+                  },
+                  "ResultPath": "$.taxableBaseResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "ValidateTaxableBaseResult",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "ValidateTaxableBaseResult": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.taxableBaseResult.body.success",
+                      "BooleanEquals": false,
+                      "Next": "HandleBusinessErrorItem"
+                    }
+                  ],
+                  "Default": "PrepareSocialSecurity"
+                },
+
+                "PrepareSocialSecurity": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "traceId.$": "$.idTraza",
+                    "minimumSalary.$": "$.parametros.salarioMinimo",
+                    "grossSalary.$": "$.taxableBaseResult.body.taxableBase",
+                    "grossPaymentValue.$": "$.incomeResult.body.grossValueLocalTotal",
+                    "grossParticipationValue.$": "$.incomeResult.body.grossValueLocalTotal",
+                    "participantRole.$": "$.participante.rol",
+                    "deductions.$": "$.deduccionesSeguridadSocial",
+                    "socialSecurityParameters.$": "$.parametrosSeguridadSocial"
+                  },
+                  "ResultPath": "$.socialSecurityInput",
+                  "Next": "CalculateSocialSecurity"
+                },
+
+                "CalculateSocialSecurity": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaCalculoSeguridadSocialArn}",
+                    "Payload": {
+                      "body.$": "States.JsonToString($.socialSecurityInput)"
+                    }
+                  },
+                  "ResultPath": "$.socialSecurityResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "ValidateSocialSecurityResult",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "ValidateSocialSecurityResult": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.socialSecurityResult.body.success",
+                      "BooleanEquals": false,
+                      "Next": "HandleBusinessErrorItem"
+                    }
+                  ],
+                  "Default": "PrepareOtherDeductions"
+                },
+
+                "PrepareOtherDeductions": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "traceId.$": "$.idTraza",
+                    "liquidationPeriod.$": "$.periodoLiquidacion",
+                    "minimumSalary.$": "$.parametros.salarioMinimo",
+                    "deductionContext": {
+                      "grossSalaryInLocalCurrency.$": "$.incomeResult.body.grossValueLocalTotal",
+                      "netSalaryInLocalCurrency.$": "$.socialSecurityResult.body.data.baseCapacityDebt",
+                      "additionalIncomeInLocalCurrency.$": "$.ingresos.additionalIncomeLocal"
+                    },
+                    "deductions.$": "$.deduccionesNegocio",
+                    "compensationFundParameters.$": "$.parametrosCajaCompensacion"
+                  },
+                  "ResultPath": "$.otherDeductionsInput",
+                  "Next": "CalculateOtherDeductions"
+                },
+
+                "CalculateOtherDeductions": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaCalculoOtrasDeduccionesArn}",
+                    "Payload": {
+                      "body.$": "States.JsonToString($.otherDeductionsInput)"
+                    }
+                  },
+                  "ResultPath": "$.otherDeductionsResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "ValidateOtherDeductionsResult",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "ValidateOtherDeductionsResult": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.otherDeductionsResult.body.success",
+                      "BooleanEquals": false,
+                      "Next": "HandleBusinessErrorItem"
+                    }
+                  ],
+                  "Default": "PrepareDebtCapacity"
+                },
+
+                "PrepareDebtCapacity": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "traceId.$": "$.idTraza",
+                    "grossSalary.$": "$.incomeResult.body.grossValueLocalTotal",
+                    "socialSecurityDeductions.$": "$.socialSecurityResult.body.data.totalDeductions",
+                    "debtPercentage.$": "$.parametros.porcentajeMaximoEndeudamiento",
+                    "nonAdditionalDeductions": 0,
+                    "exchangeRate.$": "$.parametros.tasaCambioDefault",
+                    "currency.$": "$.parametros.monedaDefault",
+                    "additionalIncomeSum.$": "$.ingresos.additionalIncomeLocal",
+                    "additionalDeductions": 0
+                  },
+                  "ResultPath": "$.debtCapacityInput",
+                  "Next": "CalculateDebtCapacity"
+                },
+
+                "CalculateDebtCapacity": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaCalculoCapacidadEndeudamientoArn}",
+                    "Payload": {
+                      "path": "/debt-capacity",
+                      "body.$": "States.JsonToString($.debtCapacityInput)"
+                    }
+                  },
+                  "ResultPath": "$.debtCapacityResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "PrepareResultForDynamo",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "PrepareResultForDynamo": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "batch.$": "$.batch",
+                    "item.$": "$.item",
+                    "traceId.$": "$.idTraza",
+                    "idParticipante.$": "$.participante.idParticipante",
+                    "idSolicitudPago.$": "$.participante.idSolicitudPago",
+                    "ingresos": {
+                      "valorBrutoTotal.$": "$.incomeResult.body.grossValueLocalTotal",
+                      "tipoParticipacion.$": "$.incomeResult.body.incomes[0].participationType",
+                      "valorBrutoParticipacion.$": "$.incomeResult.body.incomes[0].grossParticipationValue",
+                      "porcentajeParticipacion.$": "$.incomeResult.body.incomes[0].participationPercentage"
+                    },
+                    "parametros": {
+                      "smmlv.$": "$.parametros.salarioMinimo"
+                    },
+                    "pagosAdicionales.$": "$.otherDeductionsResult.body.data.deductions",
+                    "deducciones.$": "$.socialSecurityResult.body.data.deductions",
+                    "status": "COMPLETED",
+                    "chunkId.$": "$.chunkId",
+                    "totalParticipantes.$": "$.totalParticipantes"
+                  },
+                  "ResultPath": "$.dynamoInput",
+                  "Next": "WriteToDynamo"
+                },
+
+                "WriteToDynamo": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "Parameters": {
+                    "FunctionName": "${LambdaEscrituraDynamoArn}",
+                    "Payload": {
+                      "body.$": "States.JsonToString($.dynamoInput)"
+                    }
+                  },
+                  "ResultPath": "$.dynamoResult",
+                  "ResultSelector": {
+                    "statusCode.$": "$.Payload.statusCode",
+                    "body.$": "States.StringToJson($.Payload.body)"
+                  },
+                  "Next": "BuildSuccessfulItemResponse",
+                  "Retry": [
+                    {
+                      "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException"],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "Catch": [
+                    {
+                      "ErrorEquals": ["States.ALL"],
+                      "ResultPath": "$.error",
+                      "Next": "HandleErrorItem"
+                    }
+                  ]
+                },
+
+                "BuildSuccessfulItemResponse": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "success": true,
+                    "batch.$": "$.batch",
+                    "item.$": "$.item",
+                    "idParticipante.$": "$.participante.idParticipante",
+                    "status": "COMPLETED"
+                  },
+                  "End": true
+                },
+
+                "HandleBusinessErrorItem": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "success": false,
+                    "batch.$": "$.batch",
+                    "item.$": "$.item",
+                    "idParticipante.$": "$.participante.idParticipante",
+                    "errorType": "BUSINESS_ERROR",
+                    "status": "FAILED"
+                  },
+                  "End": true
+                },
+
+                "HandleErrorItem": {
+                  "Type": "Pass",
+                  "Parameters": {
+                    "success": false,
+                    "batch.$": "$.batch",
+                    "item.$": "$.item",
+                    "errorType": "SYSTEM_ERROR",
+                    "error.$": "$.error",
+                    "status": "FAILED"
+                  },
+                  "End": true
+                }
+              }
+            },
+            "ResultPath": null,
+            "End": true
+          }
+        }
+      },
+      "ResultPath": null,
+      "Next": "BuildSummary"
+    },
+
+    "HandleLecturaError": {
+      "Type": "Fail",
+      "Error": "LECTURA_ERROR",
+      "Cause": "Error en la Lambda de lectura. Revise los logs de CloudWatch para más detalles."
+    },
+
+    "BuildSummary": {
+      "Type": "Pass",
+      "Parameters": {
+        "success": true,
+        "message": "Processing completed. Results saved to DynamoDB.",
+        "totalChunks.$": "$.lecturaResult.body.totalChunks"
+      },
+      "End": true
+    }
+  }
+}

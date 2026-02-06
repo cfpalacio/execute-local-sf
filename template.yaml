@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SmartPay Liquidacion - Step Functions Orchestrator
+
+Parameters:
+  Environment:
+    Type: String
+    Default: local
+    AllowedValues:
+      - local
+      - qa
+      - prod
+
+  LambdaCalculoIngresosArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de ingresos
+
+  LambdaCalculoBaseGravableArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de base gravable
+
+  LambdaCalculoSeguridadSocialArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de seguridad social
+
+  LambdaCalculoOtrasDeduccionesArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de otras deducciones
+
+  LambdaCalculoCapacidadEndeudamientoArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de capacidad de endeudamiento
+
+Resources:
+  StepFunctionsExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'smartpay-liquidacion-sfn-role-${Environment}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !Ref LambdaCalculoIngresosArn
+                  - !Ref LambdaCalculoBaseGravableArn
+                  - !Ref LambdaCalculoSeguridadSocialArn
+                  - !Ref LambdaCalculoOtrasDeduccionesArn
+                  - !Ref LambdaCalculoCapacidadEndeudamientoArn
+        - PolicyName: CloudWatchLogsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogDelivery
+                  - logs:GetLogDelivery
+                  - logs:UpdateLogDelivery
+                  - logs:DeleteLogDelivery
+                  - logs:ListLogDeliveries
+                  - logs:PutResourcePolicy
+                  - logs:DescribeResourcePolicies
+                  - logs:DescribeLogGroups
+                Resource: '*'
+
+  LiquidacionStateMachineLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/stepfunctions/smartpay-liquidacion-${Environment}'
+      RetentionInDays: 14
+
+  LiquidacionStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Name: !Sub 'smartpay-flujo-liquidacion-${Environment}'
+      DefinitionUri: statemachine/liquidacion.asl.json
+      DefinitionSubstitutions:
+        LambdaCalculoIngresosArn: !Ref LambdaCalculoIngresosArn
+        LambdaCalculoBaseGravableArn: !Ref LambdaCalculoBaseGravableArn
+        LambdaCalculoSeguridadSocialArn: !Ref LambdaCalculoSeguridadSocialArn
+        LambdaCalculoOtrasDeduccionesArn: !Ref LambdaCalculoOtrasDeduccionesArn
+        LambdaCalculoCapacidadEndeudamientoArn: !Ref LambdaCalculoCapacidadEndeudamientoArn
+      Role: !GetAtt StepFunctionsExecutionRole.Arn
+      Logging:
+        Level: ALL
+        IncludeExecutionData: true
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt LiquidacionStateMachineLogGroup.Arn
+      Tags:
+        Proyecto: SmartPay
+        Producto: Liquidacion
+        Environment: !Ref Environment
+
+Outputs:
+  StateMachineArn:
+    Description: ARN de la maquina de estados de liquidacion
+    Value: !Ref LiquidacionStateMachine
+
+  StateMachineName:
+    Description: Nombre de la maquina de estados
+    Value: !GetAtt LiquidacionStateMachine.Name
