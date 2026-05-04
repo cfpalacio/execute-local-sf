@@ -70,19 +70,19 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: smartpay-lambda-escritura-dynamo
-      CodeUri: ../lambda-escritura-dynamo/src/
+      CodeUri: ../lambda-liquidacion-escritura/src/
       Handler: lambda_handler.lambda_handler
 
   SmartPayLecturaChunk:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: smartpay-lambda-lectura-chunk
-      CodeUri: ../lambda-lectura-chunk/src/
+      CodeUri: ../lambda-liquidacion-lectura-dynamo/src/
       Handler: lambda_handler.lambda_handler
 
   SmartPayLectura:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: smartpay-lambda-lectura
-      CodeUri: ../lambda-lectura/src/
+      CodeUri: ../lambda-liquidacion-lectura-chunk/src/
       Handler: lambda_handler.lambda_handler
