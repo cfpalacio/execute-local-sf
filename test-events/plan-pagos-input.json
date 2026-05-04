@@ -1,0 +1,18 @@
+[
+  {
+    "messageId": "4e03ac15-d3d3-4b1e-a46e-0eebbb879da0",
+    "receiptHandle": "AQEBjJLhExampleReceiptHandle",
+    "body": "{\"version\":\"0\",\"id\":\"ad312183-dbf5-d5a6-2113-425b17edc2b7\",\"detail-type\":\"Event from aws:sqs\",\"source\":\"Pipe pipe-smartpay-q-calculos-liquidacion-result-dev\",\"account\":\"927549924402\",\"time\":\"2026-03-06T17:23:30Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"messageId\":\"24b45595-1e15-4ca9-a057-1914de8456f3\",\"body\":\"{\\\"workflowType\\\":\\\"plan_pagos\\\",\\\"execution_key\\\":\\\"550e8400-e29b-41d4-a716-446655440000\\\",\\\"tipo\\\":\\\"CREAR_PLAN_PAGOS\\\"}\",\"attributes\":{\"ApproximateReceiveCount\":\"1\",\"SentTimestamp\":\"1772817810618\",\"SenderId\":\"AROA5P5SIUQZNAPB7AIR2:aws-sdk-java-1772721951986\",\"ApproximateFirstReceiveTimestamp\":\"1772817810620\"},\"messageAttributes\":{\"topic\":{\"stringValue\":\"PLAN_PAGOS\",\"stringListValues\":[],\"binaryListValues\":[],\"dataType\":\"String\"}},\"md5OfMessageAttributes\":\"faad050e614187b4dc13588ed5098d72\",\"md5OfBody\":\"25a615f0e41916798a5b4851494ed1f5\",\"eventSource\":\"aws:sqs\",\"eventSourceARN\":\"arn:aws:sqs:us-east-1:927549924402:sqs_liquidacion_result_dev\",\"awsRegion\":\"us-east-1\"}}",
+    "attributes": {
+      "ApproximateReceiveCount": "1",
+      "SentTimestamp": "1772817810879",
+      "SenderId": "AROA5P5SIUQZA7J273ACT:93425f3013d1307483022c3116bcff4f",
+      "ApproximateFirstReceiveTimestamp": "1772817810880"
+    },
+    "messageAttributes": {},
+    "md5OfBody": "356eecf7f34044f8e5155e331effd50e",
+    "eventSource": "aws:sqs",
+    "eventSourceARN": "arn:aws:sqs:us-east-1:927549924402:q-smartpay-calculos-liquidacion-request-dev",
+    "awsRegion": "us-east-1"
+  }
+]

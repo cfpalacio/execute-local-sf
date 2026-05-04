@@ -1,0 +1,48 @@
+version: '3.8'
+
+# Setup local para SmartPay Liquidacion:
+#   - stepfunctions-local : motor oficial de AWS para ejecutar maquinas de estados
+#   - dynamodb-local      : DynamoDB local (oficial AWS) para lambdas que leen/escriben
+#   - elasticmq           : implementacion compatible con SQS para los Task de sqs:sendMessage
+#
+# Las Lambdas NO corren aqui. Se levantan con `sam local start-lambda` desde el host
+# en el puerto 3001. stepfunctions-local las invoca via host.docker.internal:3001.
+
+services:
+
+  stepfunctions-local:
+    container_name: smartpay-sfn-local
+    image: amazon/aws-stepfunctions-local:latest
+    ports:
+      - "8083:8083"
+    environment:
+      # SAM Local en el host
+      - LAMBDA_ENDPOINT=http://host.docker.internal:3001
+      # SQS (elasticmq) y DynamoDB (dynamodb-local) tambien en el host via mapeo de puertos
+      - SQS_ENDPOINT=http://host.docker.internal:9324
+      - DYNAMODB_ENDPOINT=http://host.docker.internal:8000
+      # Credenciales dummy: SF Local valida que existan pero no las usa
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      # Si se quiere usar mocks en lugar de invocar Lambdas reales:
+      #   monta MockConfigFile.json y descomenta la linea de abajo
+      # - SFN_MOCK_CONFIG=/home/StepFunctionsLocal/MockConfigFile.json
+    # volumes:
+    #   - ./MockConfigFile.json:/home/StepFunctionsLocal/MockConfigFile.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  dynamodb-local:
+    container_name: smartpay-dynamodb-local
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
+    command: -jar DynamoDBLocal.jar -sharedDb -inMemory
+
+  elasticmq:
+    container_name: smartpay-elasticmq
+    image: softwaremill/elasticmq-native:latest
+    ports:
+      - "9324:9324"
+      - "9325:9325"

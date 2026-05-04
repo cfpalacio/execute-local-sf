@@ -1,0 +1,680 @@
+{
+  "execution_key": {
+    "S": "b53e4f77-1d16-4121-a95a-6ba30d86f4e0"
+  },
+  "idSolicitudPago": {
+    "S": "b53e4f77-1d16-4121-a95a-6ba30d86f4e0"
+  },
+  "periodoLiquidacion": {
+    "S": "2026-02"
+  },
+  "currentDate": {
+    "S": "2026-02-25T00:00:00"
+  },
+  "parametros": {
+    "M": {
+      "salarioMinimo": { "N": "2000000" },
+      "formula": { "S": "(originValue  * exchangeRate) / numberOfPayments" },
+      "porcentajeMaximoEndeudamiento": { "N": "50.0" },
+      "monedaDefault": { "S": "COP" },
+      "tasaCambioDefault": { "N": "1.0" },
+      "configuracionBaseGravable": {
+        "M": {
+          "limites": {
+            "L": [
+              {
+                "M": {
+                  "smmlvMin": { "N": "0.0" },
+                  "smmlvMax": { "N": "25.0" },
+                  "porcentajeDescuento": { "N": "4.0" }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "parametrosSeguridadSocial": {
+        "M": {
+          "EPS": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "rounding": { "N": "100.0" },
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "0.0" },
+                          "smmlvMax": { "N": "1.0" },
+                          "discountPercentage": { "N": "4.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "1.0" },
+                          "smmlvMax": { "N": "3.0" },
+                          "discountPercentage": { "N": "10.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "3.0" },
+                          "smmlvMax": { "N": "25.0" },
+                          "discountPercentage": { "N": "12.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "AFP": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "rounding": { "N": "100.0" },
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "0.0" },
+                          "smmlvMax": { "N": "25.0" },
+                          "discountPercentage": { "N": "16.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "FSP": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "rounding": { "N": "100.0" },
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "10.0" },
+                          "smmlvMax": { "N": "20.0" },
+                          "discountPercentage": { "N": "1.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "20.0" },
+                          "smmlvMax": { "N": "0.0" },
+                          "discountPercentage": { "N": "2.0" },
+                          "fsp": { "N": "0.0" },
+                          "fsps": { "N": "0.0" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "FSUB": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "rounding": { "N": "100.0" },
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "4.0" },
+                          "smmlvMax": { "N": "16.0" },
+                          "discountPercentage": { "N": "1.0" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "0.5" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "16.0" },
+                          "smmlvMax": { "N": "17.0" },
+                          "discountPercentage": { "N": "1.2" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "0.7" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "17.0" },
+                          "smmlvMax": { "N": "18.0" },
+                          "discountPercentage": { "N": "1.4" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "0.9" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "18.0" },
+                          "smmlvMax": { "N": "19.0" },
+                          "discountPercentage": { "N": "1.6" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "1.1" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "19.0" },
+                          "smmlvMax": { "N": "20.0" },
+                          "discountPercentage": { "N": "1.8" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "1.3" }
+                        }
+                      },
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "20.0" },
+                          "smmlvMax": { "N": "25.0" },
+                          "discountPercentage": { "N": "2.0" },
+                          "fsp": { "N": "0.5" },
+                          "fsps": { "N": "1.5" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parametrosCajaCompensacion": {
+        "M": {
+          "active": { "BOOL": true },
+          "rules": {
+            "M": {
+              "smmlvMax": { "N": "25.0" },
+              "rangos": {
+                "L": [
+                  { "N": "0.0" },
+                  { "N": "0.6" },
+                  { "N": "2.0" }
+                ]
+              },
+              "rounding": { "N": "100.0" }
+            }
+          }
+        }
+      },
+      "tiposDeduccion": {
+        "L": [
+          { "S": "EPS" },
+          { "S": "AFP" },
+          { "S": "FSP" },
+          { "S": "FSUB" },
+          { "S": "CAJA COMPENSACION" },
+          { "S": "LIBRANZA" },
+          { "S": "APORTES VOLUNTARIOS" },
+          { "S": "EMBARGOS" }
+        ]
+      },
+      "tiposIngreso": {
+        "L": [
+          { "S": "MESADA PENSIONAL" },
+          { "S": "MESADA ADICIONAL" },
+          { "S": "PARTICIPACION UTILIDADES" },
+          { "S": "MESADAS REDISTRIBUIDAS" },
+          { "S": "MESADAS RETROACTIVAS" }
+        ]
+      },
+      "operadorSeguridadSocial": {
+        "M": {
+          "periodicidad": { "S": "Mensual" },
+          "numeroIdentificacion": { "S": "900089104" },
+          "tipoIdentificacion": { "S": "NIT" },
+          "codigo": { "S": "NIT900089104" },
+          "razonSocial": { "S": "ARUS" },
+          "frecuencia": { "S": "0 0 0 30 * ? *" }
+        }
+      }
+    }
+  },
+  "participantes": {
+    "L": [
+      {
+        "M": {
+          "participante": {
+            "M": {
+              "idParticipante": { "S": "1b72a0d3-ccc3-4edd-976f-3a1d64888a3f" },
+              "compania": { "S": "PROTECCION" },
+              "idPersona": { "S": "6695E68B-D4CC-4DC0-8621-5F3E8C31ADF8" },
+              "idSolicitudPago": { "S": "b53e4f77-1d16-4121-a95a-6ba30d86f4e0" },
+              "rol": { "S": "BENEFICIARIO CÓNYUGE TEMPORAL" },
+              "productName": { "S": "RENTA VITALICIA INMEDIATA SOBREVIVENCIA LEY 100" },
+              "paymentFrequency": { "S": "0 0 0 22 * ? *" }
+            }
+          },
+          "ingresos": {
+            "M": {
+              "additionalIncomeLocal": { "N": "0" },
+              "incomes": {
+                "L": [
+                  {
+                    "M": {
+                      "incomeId": { "S": "ING-001" },
+                      "type": { "S": "MESADA PENSIONAL" },
+                      "participationType": { "S": "PORCENTAJE" },
+                      "participationPercentage": { "N": "50.0" },
+                      "baseParticipationValue": { "N": "1700000" },
+                      "grossParticipationValue": { "N": "850000" },
+                      "exchangeRate": { "N": "1.0" },
+                      "numberOfPayments": { "N": "1" },
+                      "actualPaymentNumber": { "N": "1" },
+                      "startDate": { "S": "2026-02-01T00:00:00Z" },
+                      "endDate": { "S": "2026-02-28T23:59:59Z" }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "deduccionesSeguridadSocial": {
+            "L": [
+              {
+                "M": {
+                  "type": { "S": "AFP" },
+                  "deductionId": { "S": "" },
+                  "status": { "S": "REGISTRAR" },
+                  "numberOfPayments": { "N": 1 },
+                  "actualPaymentNumber": { "N": 1 },
+                  "exchangeRate": { "N": "1.0" },
+                  "nombre": { "S": "AFP" },
+                  "tipoDeduccion": { "S": "PORCENTAJE" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "S": "MENSUAL" },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": 1 },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "S": "2026-01-01" },
+                  "fechaFin": { "NULL": true },
+                  "numeroDocumentoTercero": { "S": "10003232" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "esAdicional": { "BOOL": false },
+                  "idReferenciaExterna": { "NULL": true }
+                }
+              },
+              {
+                "M": {
+                  "type": { "S": "EPS" },
+                  "deductionId": { "S": "" },
+                  "status": { "S": "REGISTRAR" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "exchangeRate": { "N": "1.0" },
+                  "nombre": { "S": "EPS" },
+                  "tipoDeduccion": { "S": "PORCENTAJE" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "S": "MENSUAL" },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": "1" },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "S": "2026-01-01" },
+                  "fechaFin": { "NULL": true },
+                  "numeroDocumentoTercero": { "S": "1005231" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "esAdicional": { "BOOL": false },
+                  "idReferenciaExterna": { "NULL": true }
+                }
+              }
+            ]
+          },
+          "deduccionesNegocio": {
+            "L": [
+              {
+                "M": {
+                  "deductionId": { "S": "" },
+                  "type": { "S": "CCF" },
+                  "participantType": { "S": "PORCENTAJE" },
+                  "percentage": { "N": "0.02" },
+                  "value": { "N": "0" },
+                  "exchangeRate": { "N": "1.0" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "isAdditional": { "BOOL": false },
+                  "nombre": { "S": "Caja Compensacion" },
+                  "tipoDeduccion": { "S": "PORCENTAJE" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "S": "MENSUAL" },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": "1" },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "S": "2026-01-01" },
+                  "fechaFin": { "NULL": true },
+                  "numeroDocumentoTercero": { "S": "10003232" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "idReferenciaExterna": { "NULL": true }
+                }
+              }
+            ]
+          },
+          "pagosAdicionales": {
+            "L": []
+          }
+        }
+      },
+      {
+        "M": {
+          "participante": {
+            "M": {
+              "idParticipante": { "S": "2874c8ea-481f-4405-b9f0-37b94e2ccfe3" },
+              "compania": { "S": "PROTECCION" },
+              "idPersona": { "S": "6695E68B-D4CC-4DC0-8621-5F3E8C31ADF8" },
+              "idSolicitudPago": { "S": "b53e4f77-1d16-4121-a95a-6ba30d86f4e0" },
+              "rol": { "S": "BENEFICIARIO HIJO(A)" },
+              "productName": { "S": "RENTA VITALICIA INMEDIATA SOBREVIVENCIA LEY 100" },
+              "paymentFrequency": { "S": "0 0 0 22 * ? *" }
+            }
+          },
+          "ingresos": {
+            "M": {
+              "additionalIncomeLocal": { "N": "0" },
+              "incomes": {
+                 "L": [
+                  {
+                    "M": {
+                      "incomeId": { "S": "ING-003" },
+                      "type": { "S": "MESADA PENSIONAL" },
+                      "participationType": { "S": "PORCENTAJE" },
+                      "participationPercentage": { "N": "50.0" },
+                      "baseParticipationValue": { "N": "1700000" },
+                      "grossParticipationValue": { "N": "850000" },
+                      "exchangeRate": { "N": "1.0" },
+                      "numberOfPayments": { "N": "1" },
+                      "actualPaymentNumber": { "N": "1" },
+                      "startDate": { "S": "2026-02-01T00:00:00Z" },
+                      "endDate": { "S": "2026-02-28T23:59:59Z" }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "deduccionesSeguridadSocial": {
+            "L": [
+              {
+                "M": {
+                  "type": { "S": "EPS" },
+                  "deductionId": { "S": "" },
+                  "status": { "S": "REGISTRAR" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "exchangeRate": { "N": "1.0" },
+                  "nombre": { "S": "EPS" },
+                  "tipoDeduccion": { "S": "PORCENTAJE" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "S": "MENSUAL" },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": "1" },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "NULL": true },
+                  "fechaFin": { "NULL": true },
+                  "numeroDocumentoTercero": { "S": "483482" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "esAdicional": { "BOOL": false },
+                  "idReferenciaExterna": { "NULL": true }
+                }
+              }
+            ]
+          },
+          "deduccionesNegocio": {
+            "L": [
+              {
+                "M": {
+                  "deductionId": { "S": "" },
+                  "type": { "S": "CCF" },
+                  "participantType": { "S": "PORCENTAJE" },
+                  "percentage": { "N": "0.02" },
+                  "value": { "N": "0" },
+                  "exchangeRate": { "N": "1.0" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "isAdditional": { "BOOL": false },
+                  "nombre": { "S": "Caja Compensacion" },
+                  "tipoDeduccion": { "S": "PORCENTAJE" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "S": "MENSUAL" },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": "1" },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "S": "2026-01-01" },
+                  "fechaFin": { "S": "2026-12-31" },
+                  "numeroDocumentoTercero": { "S": "483482" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "idReferenciaExterna": { "NULL": true }
+                }
+              },
+              {
+                "M": {
+                  "deductionId": { "S": "4907000000TP2LIAS" },
+                  "type": { "S": "EMBARGO JUDICIAL" },
+                  "participantType": { "S": "VALOR" },
+                  "percentage": { "N": "0.0" },
+                  "value": { "N": "3444" },
+                  "exchangeRate": { "N": "1.0" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "isAdditional": { "BOOL": true },
+                  "nombre": { "S": "Embargo Judicial" },
+                  "tipoDeduccion": { "S": "VALOR" },
+                  "moneda": { "S": "COP" },
+                  "periodicidad": { "NULL": true },
+                  "frecuencia": { "NULL": true },
+                  "cantidadPagos": { "N": "1" },
+                  "estadoDeduccion": { "S": "REGISTRAR" },
+                  "fechaInicio": { "S": "2026-01-01" },
+                  "fechaFin": { "S": "2026-12-31" },
+                  "numeroDocumentoTercero": { "S": "4907000000TP2LIAS" },
+                  "tipoDocumentoTercero": { "S": "NIT" },
+                  "idReferenciaExterna": { "S": "4907000000TP2LIAS" }
+                }
+              }
+            ]
+          },
+          "pagosAdicionales": {
+            "L": []
+          }
+        }
+      }
+    ]
+  },
+  "sla": {
+    "M": {
+      "slaLiquidationControl": { "N": "24" },
+      "slaDispersionControl": { "N": "24" },
+      "slaDispersionConfirmation": { "N": "24" },
+      "slaNewsCloseness": { "N": "24" }
+    }
+  },
+  "holidays": {
+    "L": [
+      { "S": "2026-01-01T00:00:00" },
+      { "S": "2026-01-03T00:00:00" },
+      { "S": "2026-01-04T00:00:00" },
+      { "S": "2026-01-10T00:00:00" },
+      { "S": "2026-01-11T00:00:00" },
+      { "S": "2026-01-12T00:00:00" },
+      { "S": "2026-01-17T00:00:00" },
+      { "S": "2026-01-18T00:00:00" },
+      { "S": "2026-01-24T00:00:00" },
+      { "S": "2026-01-25T00:00:00" },
+      { "S": "2026-01-31T00:00:00" },
+      { "S": "2026-02-01T00:00:00" },
+      { "S": "2026-02-07T00:00:00" },
+      { "S": "2026-02-08T00:00:00" },
+      { "S": "2026-02-14T00:00:00" },
+      { "S": "2026-02-15T00:00:00" },
+      { "S": "2026-02-21T00:00:00" },
+      { "S": "2026-02-22T00:00:00" },
+      { "S": "2026-02-28T00:00:00" },
+      { "S": "2026-03-01T00:00:00" },
+      { "S": "2026-03-07T00:00:00" },
+      { "S": "2026-03-08T00:00:00" },
+      { "S": "2026-03-14T00:00:00" },
+      { "S": "2026-03-15T00:00:00" },
+      { "S": "2026-03-21T00:00:00" },
+      { "S": "2026-03-22T00:00:00" },
+      { "S": "2026-03-23T00:00:00" },
+      { "S": "2026-03-28T00:00:00" },
+      { "S": "2026-03-29T00:00:00" },
+      { "S": "2026-04-02T00:00:00" },
+      { "S": "2026-04-03T00:00:00" },
+      { "S": "2026-04-04T00:00:00" },
+      { "S": "2026-04-05T00:00:00" },
+      { "S": "2026-04-11T00:00:00" },
+      { "S": "2026-04-12T00:00:00" },
+      { "S": "2026-04-18T00:00:00" },
+      { "S": "2026-04-19T00:00:00" },
+      { "S": "2026-04-25T00:00:00" },
+      { "S": "2026-04-26T00:00:00" },
+      { "S": "2026-05-01T00:00:00" },
+      { "S": "2026-05-02T00:00:00" },
+      { "S": "2026-05-03T00:00:00" },
+      { "S": "2026-05-09T00:00:00" },
+      { "S": "2026-05-10T00:00:00" },
+      { "S": "2026-05-16T00:00:00" },
+      { "S": "2026-05-17T00:00:00" },
+      { "S": "2026-05-18T00:00:00" },
+      { "S": "2026-05-23T00:00:00" },
+      { "S": "2026-05-24T00:00:00" },
+      { "S": "2026-05-30T00:00:00" },
+      { "S": "2026-05-31T00:00:00" },
+      { "S": "2026-06-06T00:00:00" },
+      { "S": "2026-06-07T00:00:00" },
+      { "S": "2026-06-08T00:00:00" },
+      { "S": "2026-06-13T00:00:00" },
+      { "S": "2026-06-14T00:00:00" },
+      { "S": "2026-06-15T00:00:00" },
+      { "S": "2026-06-20T00:00:00" },
+      { "S": "2026-06-21T00:00:00" },
+      { "S": "2026-06-27T00:00:00" },
+      { "S": "2026-06-28T00:00:00" },
+      { "S": "2026-06-29T00:00:00" },
+      { "S": "2026-07-04T00:00:00" },
+      { "S": "2026-07-05T00:00:00" },
+      { "S": "2026-07-11T00:00:00" },
+      { "S": "2026-07-12T00:00:00" },
+      { "S": "2026-07-18T00:00:00" },
+      { "S": "2026-07-19T00:00:00" },
+      { "S": "2026-07-20T00:00:00" },
+      { "S": "2026-07-25T00:00:00" },
+      { "S": "2026-07-26T00:00:00" },
+      { "S": "2026-08-01T00:00:00" },
+      { "S": "2026-08-02T00:00:00" },
+      { "S": "2026-08-07T00:00:00" },
+      { "S": "2026-08-08T00:00:00" },
+      { "S": "2026-08-09T00:00:00" },
+      { "S": "2026-08-15T00:00:00" },
+      { "S": "2026-08-16T00:00:00" },
+      { "S": "2026-08-17T00:00:00" },
+      { "S": "2026-08-22T00:00:00" },
+      { "S": "2026-08-23T00:00:00" },
+      { "S": "2026-08-29T00:00:00" },
+      { "S": "2026-08-30T00:00:00" },
+      { "S": "2026-09-05T00:00:00" },
+      { "S": "2026-09-06T00:00:00" },
+      { "S": "2026-09-12T00:00:00" },
+      { "S": "2026-09-13T00:00:00" },
+      { "S": "2026-09-19T00:00:00" },
+      { "S": "2026-09-20T00:00:00" },
+      { "S": "2026-09-26T00:00:00" },
+      { "S": "2026-09-27T00:00:00" },
+      { "S": "2026-10-03T00:00:00" },
+      { "S": "2026-10-04T00:00:00" },
+      { "S": "2026-10-10T00:00:00" },
+      { "S": "2026-10-11T00:00:00" },
+      { "S": "2026-10-12T00:00:00" },
+      { "S": "2026-10-17T00:00:00" },
+      { "S": "2026-10-18T00:00:00" },
+      { "S": "2026-10-24T00:00:00" },
+      { "S": "2026-10-25T00:00:00" },
+      { "S": "2026-10-31T00:00:00" },
+      { "S": "2026-11-01T00:00:00" },
+      { "S": "2026-11-02T00:00:00" },
+      { "S": "2026-11-07T00:00:00" },
+      { "S": "2026-11-08T00:00:00" },
+      { "S": "2026-11-14T00:00:00" },
+      { "S": "2026-11-15T00:00:00" },
+      { "S": "2026-11-16T00:00:00" },
+      { "S": "2026-11-21T00:00:00" },
+      { "S": "2026-11-22T00:00:00" },
+      { "S": "2026-11-28T00:00:00" },
+      { "S": "2026-11-29T00:00:00" },
+      { "S": "2026-12-05T00:00:00" },
+      { "S": "2026-12-06T00:00:00" },
+      { "S": "2026-12-08T00:00:00" },
+      { "S": "2026-12-12T00:00:00" },
+      { "S": "2026-12-13T00:00:00" },
+      { "S": "2026-12-19T00:00:00" },
+      { "S": "2026-12-20T00:00:00" },
+      { "S": "2026-12-25T00:00:00" },
+      { "S": "2026-12-26T00:00:00" },
+      { "S": "2026-12-27T00:00:00" }
+    ]
+  },
+  "defaultPaymentDatesPerProduct": {
+    "M": {
+      "SEGURO PREVISIONAL AUXILIO FUNERARIO LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL INCAPACIDAD TEMPORAL LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL SOBREVIVENCIA LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "RENTA VITALICIA INMEDIATA SOBREVIVENCIA LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL INVALIDEZ LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL AUXILIO FUNERARIO LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "RENTA TEMPORAL INMEDIATA INVALIDEZ LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL INVALIDEZ LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL INCAPACIDAD TEMPORAL LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "RENTA VITALICIA INMEDIATA VEJEZ LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "SEGURO PREVISIONAL SOBREVIVENCIA LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "RENTA VITALICIA INMEDIATA INVALIDEZ LEY 100": {
+        "S": "2026-01-28T00:00:00"
+      },
+      "RENTA TEMPORAL INMEDIATA SOBREVIVENCIA LEY 2381": {
+        "S": "2026-01-28T00:00:00"
+      }
+    }
+  }
+}

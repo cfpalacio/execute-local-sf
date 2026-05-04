@@ -1,0 +1,313 @@
+{
+  "execution_key": "550e8400-e29b-41d4-a716-446655440000",
+  "idSolicitudPago": "b7c3d2e1-f456-7890-abcd-ef1234567890",
+  "periodoLiquidacion": "2026-02",
+  "currentDate": "2026-02-16T00:00:00",
+
+  "parametros": {
+    "salarioMinimo": 2000000,
+    "formula": "originValue * exchangeRate / numberOfPayments",
+    "porcentajeMaximoEndeudamiento": 50,
+    "monedaDefault": "COP",
+    "tasaCambioDefault": 1.0,
+    "configuracionBaseGravable": {
+      "limites": [
+        { "smmlvMin": 0.0, "smmlvMax": 25.0, "porcentajeDescuento": 4.0 }
+      ]
+    },
+    "parametrosSeguridadSocial": {
+      "EPS": {
+        "active": true,
+        "rules": {
+          "limits": [
+            { "smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0 }
+          ],
+          "rounding": 100.0
+        }
+      },
+      "AFP": {
+        "active": true,
+        "rules": {
+          "limits": [
+            { "smmlvMin": 0.0, "smmlvMax": 25.0, "discountPercentage": 4.0 }
+          ],
+          "rounding": 100.0
+        }
+      },
+      "FSP": {
+        "active": true,
+        "rules": {
+          "limits": [
+            { "smmlvMin": 4.0, "smmlvMax": 16.0, "discountPercentage": 1.0 }
+          ],
+          "rounding": 100.0
+        }
+      }
+    },
+    "parametrosCajaCompensacion": {
+      "rules": {
+        "smmlvMax": 4.0,
+        "rounding": 100.0
+      }
+    }
+  },
+
+  "participantes": [
+    {
+      "participante": {
+        "idParticipante": "PART-001",
+        "idSolicitudPago": "b7c3d2e1-f456-7890-abcd-ef1234567890",
+        "compania": "ASEGURADORA EJEMPLO S.A.",
+        "idPersona": 12345,
+        "rol": "PENSIONADO",
+        "productName": "PENSION_VEJEZ",
+        "paymentFrequency": "MENSUAL"
+      },
+      "ingresos": {
+        "additionalIncomeLocal": 0,
+        "incomes": [
+          {
+            "incomeId": "ING-001",
+            "type": "MESADA_PENSIONAL",
+            "participationType": "PORCENTAJE",
+            "participationPercentage": 50.0,
+            "baseParticipationValue": 1700000,
+            "grossParticipationValue": 850000,
+            "exchangeRate": 1.0,
+            "numberOfPayments": 1,
+            "actualPaymentNumber": 1,
+            "startDate": "2026-02-01T00:00:00Z",
+            "endDate": "2026-02-28T23:59:59Z"
+          },
+          {
+            "incomeId": "ING-003",
+            "type": "PAGO_PARTICIPANTE_ADICIONAL_2",
+            "participationType": "PORCENTAJE",
+            "participationPercentage": 100.0,
+            "baseParticipationValue": 850000,
+            "grossParticipationValue": 850000,
+            "exchangeRate": 1.0,
+            "numberOfPayments": 1,
+            "actualPaymentNumber": 1,
+            "startDate": "2026-12-01T00:00:00Z",
+            "endDate": "2026-12-31T23:59:59Z"
+          }
+        ]
+      },
+      "deduccionesSeguridadSocial": [
+        {
+          "type": "EPS",
+          "deductionId": "DED-EPS-001",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0,
+          "nombre": "EPS",
+          "tipoDeduccion": "PORCENTAJE",
+          "moneda": "COP",
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "esAdicional": false,
+          "idReferenciaExterna": null
+        },
+        {
+          "type": "AFP",
+          "deductionId": "DED-AFP-001",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 1,
+          "exchangeRate": 1.0,
+          "nombre": "AFP",
+          "tipoDeduccion": "PORCENTAJE",
+          "moneda": "COP",
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "esAdicional": false,
+          "idReferenciaExterna": null
+        }
+      ],
+      "deduccionesNegocio": [
+        {
+          "deductionId": "DED-LIB-001",
+          "type": "LIBRANZA",
+          "participantType": "VALOR",
+          "percentage": null,
+          "value": 400000,
+          "exchangeRate": 1.0,
+          "numberOfPayments": 1,
+          "actualPaymentNumber": 1,
+          "isAdditional": false,
+          "nombre": "Libranza Banco Popular",
+          "tipoDeduccion": "VALOR",
+          "moneda": "COP",
+          "periodicidad": "MENSUAL",
+          "frecuencia": "1CADAMES",
+          "cantidadPagos": 36,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2025-06-01",
+          "fechaFin": "2028-06-01",
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "idReferenciaExterna": "DED-LIB-001"
+        },
+        {
+          "deductionId": "DED-ADD-001",
+          "type": "DEDUCCION_ADICIONAL",
+          "participantType": "VALOR",
+          "percentage": null,
+          "value": 100000,
+          "exchangeRate": 1.0,
+          "numberOfPayments": 1,
+          "actualPaymentNumber": 1,
+          "isAdditional": true,
+          "nombre": "Deduccion Adicional Junio y Diciembre",
+          "tipoDeduccion": "VALOR",
+          "moneda": "COP",
+          "periodicidad": "SEMESTRAL",
+          "frecuencia": "0 0 0 1 6,12 ? 2026",
+          "cantidadPagos": 2,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": "2026-12-31",
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "idReferenciaExterna": "DED-ADD-001"
+        }
+      ],
+      "pagosAdicionales": []
+    },
+    {
+      "participante": {
+        "idParticipante": "PART-002",
+        "idSolicitudPago": "b7c3d2e1-f456-7890-abcd-ef1234567890",
+        "compania": "ASEGURADORA EJEMPLO S.A.",
+        "idPersona": 67890,
+        "rol": "PENSIONADO",
+        "productName": "PENSION_VEJEZ",
+        "paymentFrequency": "MENSUAL"
+      },
+      "ingresos": {
+        "additionalIncomeLocal": 200000,
+        "incomes": [
+          {
+            "incomeId": "ING-002",
+            "type": "MESADA_PENSIONAL",
+            "participationType": "PORCENTAJE",
+            "participationPercentage": 100.0,
+            "baseParticipationValue": 3500000,
+            "grossParticipationValue": 3500000,
+            "exchangeRate": 1.0,
+            "numberOfPayments": 1,
+            "actualPaymentNumber": 1,
+            "startDate": "2026-02-01T00:00:00Z",
+            "endDate": "2026-02-28T23:59:59Z"
+          }
+        ]
+      },
+      "deduccionesSeguridadSocial": [
+        {
+          "type": "EPS",
+          "deductionId": "DED-EPS-002",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 3,
+          "exchangeRate": 1.0,
+          "nombre": "EPS",
+          "tipoDeduccion": "PORCENTAJE",
+          "moneda": "COP",
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "esAdicional": false,
+          "idReferenciaExterna": null
+        },
+        {
+          "type": "AFP",
+          "deductionId": "DED-AFP-002",
+          "status": "ACTIVE",
+          "numberOfPayments": 12,
+          "actualPaymentNumber": 3,
+          "exchangeRate": 1.0,
+          "nombre": "AFP",
+          "tipoDeduccion": "PORCENTAJE",
+          "moneda": "COP",
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null,
+          "esAdicional": false,
+          "idReferenciaExterna": null
+        }
+      ],
+      "deduccionesNegocio": [],
+      "pagosAdicionales": []
+    }
+  ],
+
+  "sla": {
+    "slaLiquidationControl": 24,
+    "slaNewsCloseness": 48,
+    "slaDispersionConfirmation": 72,
+    "slaDispersionControl": 24
+  },
+
+  "holidays": [
+    "2026-02-09T00:00:00",
+    "2026-03-23T00:00:00",
+    "2026-04-02T00:00:00",
+    "2026-04-03T00:00:00"
+  ],
+
+  "defaultPaymentDatesPerProduct": {
+    "PENSION_VEJEZ": {
+      "2026-02": "2026-02-20T00:00:00",
+      "2026-03": "2026-03-20T00:00:00",
+      "2026-04": "2026-04-20T00:00:00",
+      "2026-05": "2026-05-20T00:00:00",
+      "2026-06": "2026-06-22T00:00:00",
+      "2026-07": "2026-07-20T00:00:00",
+      "2026-08": "2026-08-20T00:00:00",
+      "2026-09": "2026-09-21T00:00:00",
+      "2026-10": "2026-10-20T00:00:00",
+      "2026-11": "2026-11-20T00:00:00",
+      "2026-12": "2026-12-21T00:00:00"
+    },
+    "PENSION_VEJEZ/PAGO_PARTICIPANTE_ADICIONAL_2": {
+      "2026-12": "2026-12-15T00:00:00"
+    },
+    "PENSION_INVALIDEZ": {
+      "2026-02": "2026-02-25T00:00:00",
+      "2026-03": "2026-03-25T00:00:00",
+      "2026-04": "2026-04-24T00:00:00",
+      "2026-05": "2026-05-25T00:00:00",
+      "2026-06": "2026-06-25T00:00:00",
+      "2026-07": "2026-07-24T00:00:00",
+      "2026-08": "2026-08-25T00:00:00",
+      "2026-09": "2026-09-25T00:00:00",
+      "2026-10": "2026-10-23T00:00:00",
+      "2026-11": "2026-11-25T00:00:00",
+      "2026-12": "2026-12-24T00:00:00"
+    }
+  }
+}

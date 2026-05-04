@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SmartPay Liquidacion - Template SAM agregado para correr todas las Lambdas con `sam local start-lambda`. NO usar para deploy real.
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures:
+      - x86_64
+    Timeout: 30
+    MemorySize: 512
+    Environment:
+      Variables:
+        ENVIRONMENT: local
+        AWS_DEFAULT_REGION: us-east-1
+        DYNAMODB_ENDPOINT_URL: http://host.docker.internal:8000
+        DYNAMODB_TABLE_EXECUTION_PARAMS: dynamodb-smartpay-preliquidacion-parametros
+        DYNAMO_TABLE_NAME: dynamodb-smartpay-preliquidacion-parametros
+        DYNAMODB_TABLE_PAYMENT_PLAN: dynamodb-smartpay-registro-plan-pagos
+        DYNAMODB_TABLE_RESULTS: dynamodb-smartpay-registro-plan-pagos
+        DYNAMODB_TABLE_CHUNKS: dynamodb-smartpay-preliquidacion-parametros
+        SQS_ENDPOINT_URL: http://host.docker.internal:9324
+        STEPFUNCTION_LIQUIDATION_RESPONSE_QUEUE_URL: http://host.docker.internal:9324/queue/smartpay-liquidation-response
+
+Resources:
+
+  SmartPayCalculoIngresos:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-ingresos
+      CodeUri: ../lambda-calculo-ingresos/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayCalculoBaseGravable:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-base-gravable
+      CodeUri: ../lambda-calculo-base-gravable/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayCalculoSeguridadSocial:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-seguridad-social
+      CodeUri: ../lambda-calculo-seguridad-social/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayCalculoOtrasDeducciones:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-otras-deducciones
+      CodeUri: ../lambda-calculo-otras-deducciones/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayCalculoCapacidadEndeudamiento:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-capacidad-endeudamiento
+      CodeUri: ../lambda-calculo-capacidad-endeudamiento/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayCalculoFechaPago:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-calculo-fecha-pago
+      CodeUri: ../lambda-calculo-fecha-pago/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayEscrituraDynamo:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-escritura-dynamo
+      CodeUri: ../lambda-escritura-dynamo/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayLecturaChunk:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-lectura-chunk
+      CodeUri: ../lambda-lectura-chunk/src/
+      Handler: lambda_handler.lambda_handler
+
+  SmartPayLectura:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: smartpay-lambda-lectura
+      CodeUri: ../lambda-lectura/src/
+      Handler: lambda_handler.lambda_handler

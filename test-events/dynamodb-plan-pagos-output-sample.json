@@ -1,0 +1,130 @@
+[
+  {
+    "id_participante": "PART-003",
+    "id_solicitud_pago": "c8d4e3f2-g567-8901-bcde-fg2345678901#PERIODO#2026-02#PAGO#1",
+    "periodoLiquidacion": "2026-02",
+    "numeroPago": 1,
+    "idParticipante": "PART-003",
+    "compania": "ASEGURADORA EJEMPLO S.A.",
+    "idPersona": 12345,
+    "idSolicitudPago": "c8d4e3f2-g567-8901-bcde-fg2345678901",
+    "ingresos": {
+      "valorBrutoTotal": 850000,
+      "tipoParticipacion": "PORCENTAJE",
+      "valorBrutoParticipacion": 850000,
+      "porcentajeParticipacion": 50.0
+    },
+    "parametros": {
+      "smmlv": 2000000
+    },
+    "baseGravable": {
+      "valorBrutoPago": 850000,
+      "salarioMinimo": 2000000,
+      "relacionSmmlv": 0.425,
+      "baseGravable": 850000,
+      "porcentajeDescuento": 4.0,
+      "valorDescuento": 34000
+    },
+    "seguridadSocial": {
+      "totalSeguridadSocial": 68000,
+      "deducciones": [
+        {
+          "idReferenciaExterna": null,
+          "esAdicional": false,
+          "tipo": "EPS",
+          "nombre": "EPS",
+          "tipoDeduccion": "PORCENTAJE",
+          "porcentaje": 4.0,
+          "valor": 34000,
+          "valorOrigen": 34000,
+          "moneda": "COP",
+          "tasaCambio": 1.0,
+          "valorLocal": 34000,
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null
+        },
+        {
+          "idReferenciaExterna": null,
+          "esAdicional": false,
+          "tipo": "AFP",
+          "nombre": "AFP",
+          "tipoDeduccion": "PORCENTAJE",
+          "porcentaje": 4.0,
+          "valor": 34000,
+          "valorOrigen": 34000,
+          "moneda": "COP",
+          "tasaCambio": 1.0,
+          "valorLocal": 34000,
+          "periodicidad": "MENSUAL",
+          "frecuencia": null,
+          "cantidadPagos": null,
+          "estadoDeduccion": "ACTIVA",
+          "fechaInicio": "2026-01-01",
+          "fechaFin": null,
+          "numeroDocumentoTercero": null,
+          "tipoDocumentoTercero": null
+        }
+      ],
+      "baseCapacityDebt": 782000,
+      "totalDeductions": 68000
+    },
+    "otrasDeducciones": [
+      {
+        "idReferenciaExterna": "DED-LIB-003",
+        "esAdicional": false,
+        "tipo": "LIBRANZA",
+        "nombre": "Libranza Banco Popular",
+        "tipoDeduccion": "VALOR",
+        "porcentaje": 0,
+        "valor": 400000,
+        "valorOrigen": 400000,
+        "moneda": "COP",
+        "tasaCambio": 1.0,
+        "valorLocal": 400000,
+        "periodicidad": "MENSUAL",
+        "frecuencia": "1CADAMES",
+        "cantidadPagos": 36,
+        "estadoDeduccion": "ACTIVA",
+        "fechaInicio": "2025-06-01",
+        "fechaFin": "2028-06-01",
+        "numeroDocumentoTercero": null,
+        "tipoDocumentoTercero": null
+      }
+    ],
+    "pagosAdicionales": [],
+    "capacidadEndeudamiento": [
+      {
+        "esAdicional": false,
+        "valorBase": 191000,
+        "deducciones": 0,
+        "valorOrigen": 191000,
+        "valorLocal": 191000,
+        "porcentajeDeuda": 50,
+        "moneda": "COP",
+        "tasaCambio": 1.0
+      }
+    ],
+    "fechaPago": {
+      "nombreProducto": "RENTA TEMPORAL INMEDIATA INVALIDEZ LEY 2381",
+      "fechaPago": "2026-02-25T00:00:00",
+      "fechaPagoReal": "2026-02-25T00:00:00",
+      "fechaConfirmacionDispersion": "2026-02-22T00:00:00",
+      "fechaConfirmacionDispersionReal": "2026-02-20T00:00:00",
+      "fechaConfirmacionCierreDispersionLiquidacion": "2026-02-19T00:00:00",
+      "fechaConfirmacionCierreDispersionLiquidacionReal": "2026-02-19T00:00:00",
+      "fechaCierreLiquidacion": "2026-02-18T00:00:00",
+      "fechaCierreLiquidacionReal": "2026-02-18T00:00:00",
+      "fechaCierreNovedades": "2026-02-16T00:00:00",
+      "fechaCierreNovedadesReal": "2026-02-16T00:00:00"
+    },
+    "estado": "COMPLETED",
+    "fechaCreacion": "2026-02-17T20:30:15.123456+00:00",
+    "fechaActualizacion": "2026-02-17T20:30:15.123456+00:00"
+  }
+]

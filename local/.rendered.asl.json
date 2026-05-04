@@ -1,0 +1,12 @@
+// Auto rendered by Step Function Orchestrator
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "HelloWorld",
+  "States": {
+    "HelloWorld": {
+      "Type": "Pass",
+      "Result": "Hello, World!",
+      "End": true
+    }
+  }
+}

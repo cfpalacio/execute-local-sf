@@ -8,7 +8,7 @@ LOCALSTACK_ENDPOINT="http://localhost:4566"
 AWS_REGION="us-east-1"
 STATE_MACHINE_ARN="arn:aws:states:$AWS_REGION:000000000000:stateMachine:smartpay-flujo-liquidacion-local"
 
-INPUT_FILE="${1:-$PROJECT_ROOT/test-events/lectura-input.json}"
+INPUT_FILE="${1:-$PROJECT_ROOT/test-events/liquidacion-input.json}"
 
 if [ ! -f "$INPUT_FILE" ]; then
     echo "Error: Archivo de entrada no encontrado: $INPUT_FILE"

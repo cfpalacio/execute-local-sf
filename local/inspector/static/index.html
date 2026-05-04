@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>SmartPay Liquidacion - Inspector Local</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a1f29;
+      --border: #2a3140;
+      --text: #d8dee9;
+      --muted: #7c8694;
+      --accent: #88c0d0;
+      --good: #a3be8c;
+      --bad: #bf616a;
+      --warn: #ebcb8b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      background: var(--bg); color: var(--text); margin: 0; padding: 0;
+      font-size: 13px;
+    }
+    header {
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      padding: 12px 20px; display: flex; gap: 20px; align-items: center;
+    }
+    header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+    header .info { color: var(--muted); font-size: 12px; }
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 12px; height: calc(100vh - 50px);
+    }
+    .panel {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .panel h2 {
+      margin: 0; padding: 10px 14px; font-size: 13px; font-weight: 600;
+      border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;
+      align-items: center;
+    }
+    .panel-body { padding: 12px 14px; overflow: auto; flex: 1; }
+    button {
+      background: var(--accent); color: var(--bg); border: 0; padding: 6px 12px;
+      border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px;
+    }
+    button.secondary { background: var(--border); color: var(--text); }
+    button:hover { opacity: 0.85; }
+    select, input, textarea {
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      padding: 6px 10px; border-radius: 4px; font-family: ui-monospace, monospace;
+      font-size: 12px;
+    }
+    textarea { width: 100%; min-height: 100px; font-family: ui-monospace, monospace; }
+    .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .row > * { flex: 0 0 auto; }
+    .row.fill > input, .row.fill > select { flex: 1 1 auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td {
+      padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border);
+      font-family: ui-monospace, monospace;
+    }
+    th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+    tr.clickable:hover { background: rgba(136, 192, 208, 0.08); cursor: pointer; }
+    tr.selected { background: rgba(136, 192, 208, 0.15); }
+    .badge { padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+    .badge.RUNNING   { background: rgba(235, 203, 139, 0.2); color: var(--warn); }
+    .badge.SUCCEEDED { background: rgba(163, 190, 140, 0.2); color: var(--good); }
+    .badge.FAILED    { background: rgba(191, 97, 106, 0.2); color: var(--bad); }
+    .badge.ABORTED   { background: rgba(191, 97, 106, 0.2); color: var(--bad); }
+    .badge.TIMED_OUT { background: rgba(191, 97, 106, 0.2); color: var(--bad); }
+    pre {
+      background: var(--bg); border: 1px solid var(--border); padding: 10px;
+      border-radius: 4px; font-size: 11px; overflow: auto; margin: 0;
+      max-height: 400px;
+    }
+    .small { color: var(--muted); font-size: 11px; }
+    .err { color: var(--bad); }
+    .ok  { color: var(--good); }
+    .timeline-event {
+      padding: 4px 8px; border-left: 2px solid var(--border); margin-left: 8px;
+      font-family: ui-monospace, monospace; font-size: 11px;
+    }
+    .timeline-event.entered  { border-color: var(--accent); }
+    .timeline-event.exited   { border-color: var(--good); }
+    .timeline-event.failed   { border-color: var(--bad); }
+    .timeline-event.scheduled, .timeline-event.started { border-color: var(--muted); }
+    .timeline-event .ts { color: var(--muted); }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+    .tab {
+      padding: 8px 14px; cursor: pointer; color: var(--muted);
+      border-bottom: 2px solid transparent; font-weight: 600; font-size: 12px;
+    }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .key-pill {
+      display: inline-block; padding: 2px 8px; background: rgba(136,192,208,0.15);
+      color: var(--accent); border-radius: 10px; font-family: ui-monospace, monospace;
+      font-size: 11px; margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SmartPay Liquidacion - Inspector Local</h1>
+    <span class="info" id="sm-info">Cargando state machine...</span>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="tabs">
+        <div class="tab active" data-tab="run">Iniciar ejecucion</div>
+        <div class="tab" data-tab="upload">Cargar parametros</div>
+      </div>
+
+      <div class="panel-body" style="padding-top: 0">
+
+        <div id="tab-run" class="tab-content active">
+          <div class="row">
+            <label>execution_key:</label>
+            <select id="exec-key-select" onchange="onKeyChange()" style="flex:1"></select>
+            <button class="secondary" onclick="refreshKeys()" title="Refrescar keys">&#x21bb;</button>
+          </div>
+          <div class="row">
+            <label>Nombre:</label>
+            <input id="exec-name" placeholder="auto" style="flex:1">
+            <button class="secondary" onclick="loadPreset('plan_pagos')">Preset plan_pagos</button>
+          </div>
+          <textarea id="exec-input" placeholder='{"workflowType": "plan_pagos", "execution_key": "...", "tipo": "CREAR_PLAN_PAGOS"}'></textarea>
+          <div class="row" style="margin-top: 8px">
+            <button onclick="startExecution()">Iniciar ejecucion</button>
+            <button class="secondary" onclick="refreshExecutions()">Refrescar lista</button>
+          </div>
+          <div id="start-result" class="small"></div>
+
+          <h3 style="margin-top: 20px; font-size: 13px; color: var(--muted)">Ejecuciones recientes</h3>
+          <table id="exec-table">
+            <thead><tr><th>Estado</th><th>Nombre</th><th>Inicio</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div id="tab-upload" class="tab-content">
+          <p class="small">
+            Pega un JSON con los parametros para la tabla
+            <code>dynamodb-smartpay-preliquidacion-parametros</code>.
+            Acepta formato DynamoDB ({"S": "..."}) o JSON regular (se convierte automaticamente).
+          </p>
+          <div class="row">
+            <label><input type="checkbox" id="auto-key" checked> Auto-generar execution_key (UUID)</label>
+          </div>
+          <textarea id="upload-input" style="min-height: 220px"
+            placeholder='{ "periodoLiquidacion": "2026-04", "valorBrutoPagoProgramado": 1750905, ... }'></textarea>
+          <div class="row" style="margin-top: 8px">
+            <button onclick="uploadParametros()">Subir y crear</button>
+            <button class="secondary" onclick="loadSampleUpload()">Cargar JSON de ejemplo</button>
+          </div>
+          <div id="upload-result" class="small"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>
+        DynamoDB
+        <span>
+          <select id="ddb-table" onchange="scanTable()"></select>
+          <button class="secondary" onclick="scanTable()">Refrescar</button>
+        </span>
+      </h2>
+      <div class="panel-body">
+        <table id="ddb-table-view">
+          <thead><tr><th>Item</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <pre id="ddb-detail" style="margin-top: 12px; display: none;"></pre>
+      </div>
+    </section>
+
+    <section class="panel" style="grid-column: span 2">
+      <h2>
+        <span id="exec-detail-title">Detalle de ejecucion</span>
+        <span class="small" id="exec-detail-arn"></span>
+      </h2>
+      <div class="panel-body">
+        <div id="exec-detail-summary"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px">
+          <div>
+            <h3 style="font-size: 12px; color: var(--muted); margin: 0 0 6px">Output / Error</h3>
+            <pre id="exec-detail-output">-</pre>
+          </div>
+          <div>
+            <h3 style="font-size: 12px; color: var(--muted); margin: 0 0 6px">Historia</h3>
+            <div id="exec-detail-history" style="max-height: 400px; overflow: auto"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+const PRESETS = {
+  plan_pagos: {
+    workflowType: "plan_pagos",
+    execution_key: "9d52fa5f-6fca-4c30-84de-275eaf56f50a",
+    tipo: "CREAR_PLAN_PAGOS"
+  }
+};
+
+const SAMPLE_UPLOAD = {
+  currentDate: "2026-04-30T00:00:00",
+  periodoLiquidacion: "2026-04",
+  valorBrutoPagoProgramado: 1750905,
+  parametros: {
+    salarioMinimo: 1750905,
+    formula: "(originValue  * exchangeRate) / numberOfPayments",
+    monedaDefault: "COP",
+    porcentajeMaximoEndeudamiento: 50,
+    tasaCambioDefault: 1,
+    configuracionBaseGravable: { limites: null }
+  },
+  participantes: [],
+  holidays: [],
+  defaultPaymentDatesPerProduct: {},
+  sla: { slaDispersionConfirmation: 24, slaDispersionControl: 24, slaLiquidationControl: 24, slaNewsCloseness: 24 }
+};
+
+function setupTabs() {
+  document.querySelectorAll(".tab").forEach(t => {
+    t.onclick = () => {
+      document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      document.getElementById(`tab-${t.dataset.tab}`).classList.add("active");
+    };
+  });
+}
+
+function loadSampleUpload() {
+  document.getElementById("upload-input").value = JSON.stringify(SAMPLE_UPLOAD, null, 2);
+}
+
+async function uploadParametros() {
+  const raw = document.getElementById("upload-input").value.trim();
+  const auto = document.getElementById("auto-key").checked;
+  const resultEl = document.getElementById("upload-result");
+  if (!raw) {
+    resultEl.innerHTML = `<span class="err">JSON vacio</span>`;
+    return;
+  }
+  let parsed;
+  try { parsed = JSON.parse(raw); }
+  catch (e) { resultEl.innerHTML = `<span class="err">JSON invalido: ${e.message}</span>`; return; }
+  try {
+    const res = await api("/api/parametros", {
+      method: "POST",
+      body: JSON.stringify({ item: parsed, autoGenerateKey: auto }),
+    });
+    resultEl.innerHTML = `
+      <span class="ok">Cargado.</span>
+      execution_key: <span class="key-pill">${res.execution_key}</span>
+      <button class="secondary" onclick="useKeyForExecution('${res.execution_key}')">Usar en ejecucion</button>`;
+    await refreshKeys();
+    scanTable();
+  } catch (e) {
+    resultEl.innerHTML = `<span class="err">Error: ${e.message}</span>`;
+  }
+}
+
+function useKeyForExecution(key) {
+  document.querySelector('.tab[data-tab="run"]').click();
+  const sel = document.getElementById("exec-key-select");
+  if (![...sel.options].some(o => o.value === key)) {
+    sel.add(new Option(key, key));
+  }
+  sel.value = key;
+  onKeyChange();
+}
+
+async function refreshKeys() {
+  const keys = await api("/api/parametros/keys");
+  const sel = document.getElementById("exec-key-select");
+  const previous = sel.value;
+  sel.innerHTML = "";
+  if (!keys.length) {
+    sel.add(new Option("(sin parametros - sube uno en 'Cargar parametros')", ""));
+  } else {
+    keys.forEach(k => sel.add(new Option(k, k)));
+    sel.value = previous && keys.includes(previous) ? previous : keys[0];
+  }
+  onKeyChange();
+}
+
+function onKeyChange() {
+  const key = document.getElementById("exec-key-select").value;
+  if (!key) return;
+  const ta = document.getElementById("exec-input");
+  let payload;
+  try { payload = JSON.parse(ta.value); } catch { payload = { ...PRESETS.plan_pagos }; }
+  payload.execution_key = key;
+  if (!payload.workflowType) payload.workflowType = "plan_pagos";
+  if (!payload.tipo) payload.tipo = "CREAR_PLAN_PAGOS";
+  ta.value = JSON.stringify(payload, null, 2);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function loadPreset(name) {
+  document.getElementById("exec-input").value = JSON.stringify(PRESETS[name], null, 2);
+}
+
+async function loadStateMachine() {
+  const info = await api("/api/state-machine");
+  document.getElementById("sm-info").textContent = info.exists
+    ? `${info.name} (${info.arn})`
+    : `NO EXISTE - corre 'make deploy'`;
+}
+
+async function refreshExecutions() {
+  const execs = await api("/api/executions");
+  const tbody = document.querySelector("#exec-table tbody");
+  tbody.innerHTML = "";
+  execs.forEach(e => {
+    const tr = document.createElement("tr");
+    tr.classList.add("clickable");
+    tr.dataset.arn = e.executionArn;
+    tr.onclick = () => selectExecution(e.executionArn, tr);
+    tr.innerHTML = `
+      <td><span class="badge ${e.status}">${e.status}</span></td>
+      <td>${e.name}</td>
+      <td class="small">${new Date(e.startDate).toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+async function selectExecution(arn, row) {
+  document.querySelectorAll("#exec-table tr.selected").forEach(r => r.classList.remove("selected"));
+  row.classList.add("selected");
+
+  document.getElementById("exec-detail-arn").textContent = arn;
+  const data = await api(`/api/executions/${encodeURIComponent(arn)}`);
+  const desc = data.description;
+
+  document.getElementById("exec-detail-summary").innerHTML = `
+    <span class="badge ${desc.status}">${desc.status}</span>
+    <span class="small">duracion: ${desc.stopDate ? Math.round((new Date(desc.stopDate) - new Date(desc.startDate))) + 'ms' : 'corriendo'}</span>
+  `;
+
+  const output = desc.output || desc.cause || "-";
+  document.getElementById("exec-detail-output").textContent =
+    typeof output === 'string' ? (() => { try { return JSON.stringify(JSON.parse(output), null, 2); } catch { return output; } })() : JSON.stringify(output, null, 2);
+
+  const histEl = document.getElementById("exec-detail-history");
+  histEl.innerHTML = "";
+  data.history.forEach(ev => {
+    const name = ev.stateEnteredEventDetails?.name || ev.stateExitedEventDetails?.name || "";
+    const cls = ev.type.includes("Entered") ? "entered"
+              : ev.type.includes("Exited") || ev.type.includes("Succeeded") ? "exited"
+              : ev.type.includes("Failed") ? "failed" : "scheduled";
+    const div = document.createElement("div");
+    div.className = `timeline-event ${cls}`;
+    div.innerHTML = `<span class="ts">${new Date(ev.timestamp).toLocaleTimeString()}</span> <strong>${ev.type}</strong> ${name}`;
+    histEl.appendChild(div);
+  });
+}
+
+async function startExecution() {
+  const input = document.getElementById("exec-input").value.trim();
+  const name = document.getElementById("exec-name").value.trim() || null;
+  const resultEl = document.getElementById("start-result");
+  try {
+    const parsed = JSON.parse(input);
+    const res = await api("/api/executions", { method: "POST", body: JSON.stringify({ input: parsed, name }) });
+    resultEl.innerHTML = `<span class="ok">Iniciada: ${res.executionArn}</span>`;
+    setTimeout(() => { refreshExecutions(); scanTable(); }, 1500);
+  } catch (e) {
+    resultEl.innerHTML = `<span class="err">Error: ${e.message}</span>`;
+  }
+}
+
+async function loadTables() {
+  const tables = await api("/api/tables");
+  const sel = document.getElementById("ddb-table");
+  sel.innerHTML = tables.map(t => `<option value="${t}">${t}</option>`).join("");
+  if (tables.length) scanTable();
+}
+
+async function scanTable() {
+  const table = document.getElementById("ddb-table").value;
+  if (!table) return;
+  const items = await api(`/api/tables/${encodeURIComponent(table)}?limit=100`);
+  const tbody = document.querySelector("#ddb-table-view tbody");
+  tbody.innerHTML = "";
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td class="small">Sin items</td></tr>`;
+    return;
+  }
+  items.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.classList.add("clickable");
+    tr.onclick = () => {
+      const det = document.getElementById("ddb-detail");
+      det.style.display = "block";
+      det.textContent = JSON.stringify(item, null, 2);
+    };
+    const pkLabel = item.execution_key || item.id_participante || item.id_solicitud_pago || JSON.stringify(item).slice(0, 80);
+    tr.innerHTML = `<td>${pkLabel}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+setupTabs();
+setInterval(refreshExecutions, 5000);
+loadStateMachine();
+loadTables();
+refreshExecutions();
+refreshKeys();
+</script>
+</body>
+</html>

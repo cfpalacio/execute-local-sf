@@ -1,6 +1,9 @@
 {
-  "lotes": [1],
-  "tamanoChunk": 500,
+  "workflowType": "batch",
+  "chunks": [
+    { "batch_id": "1", "chunk_id": "CHUNK-000" },
+    { "batch_id": "1", "chunk_id": "CHUNK-001" }
+  ],
   "periodoLiquidacion": "2026-02",
   "parametros": {
     "salarioMinimo": 2000000,

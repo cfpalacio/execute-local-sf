@@ -1,0 +1,311 @@
+{
+  "execution_key": {
+    "S": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "idSolicitudPago": {
+    "S": "b7c3d2e1-f456-7890-abcd-ef1234567890"
+  },
+  "periodoLiquidacion": {
+    "S": "2026-02"
+  },
+  "currentDate": {
+    "S": "2026-02-16T00:00:00"
+  },
+  "parametros": {
+    "M": {
+      "salarioMinimo": { "N": "2000000" },
+      "formula": { "S": "originValue * exchangeRate / numberOfPayments" },
+      "porcentajeMaximoEndeudamiento": { "N": "50" },
+      "monedaDefault": { "S": "COP" },
+      "tasaCambioDefault": { "N": "1.0" },
+      "configuracionBaseGravable": {
+        "M": {
+          "limites": {
+            "L": [
+              {
+                "M": {
+                  "smmlvMin": { "N": "0.0" },
+                  "smmlvMax": { "N": "25.0" },
+                  "porcentajeDescuento": { "N": "4.0" }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "parametrosSeguridadSocial": {
+        "M": {
+          "EPS": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "0.0" },
+                          "smmlvMax": { "N": "25.0" },
+                          "discountPercentage": { "N": "4.0" }
+                        }
+                      }
+                    ]
+                  },
+                  "rounding": { "N": "100.0" }
+                }
+              }
+            }
+          },
+          "AFP": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "0.0" },
+                          "smmlvMax": { "N": "25.0" },
+                          "discountPercentage": { "N": "4.0" }
+                        }
+                      }
+                    ]
+                  },
+                  "rounding": { "N": "100.0" }
+                }
+              }
+            }
+          },
+          "FSP": {
+            "M": {
+              "active": { "BOOL": true },
+              "rules": {
+                "M": {
+                  "limits": {
+                    "L": [
+                      {
+                        "M": {
+                          "smmlvMin": { "N": "4.0" },
+                          "smmlvMax": { "N": "16.0" },
+                          "discountPercentage": { "N": "1.0" }
+                        }
+                      }
+                    ]
+                  },
+                  "rounding": { "N": "100.0" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parametrosCajaCompensacion": {
+        "M": {
+          "rules": {
+            "M": {
+              "smmlvMax": { "N": "4.0" },
+              "rounding": { "N": "100.0" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "participantes": {
+    "L": [
+      {
+        "M": {
+          "participante": {
+            "M": {
+              "idParticipante": { "S": "PART-001" },
+              "idSolicitudPago": { "S": "b7c3d2e1-f456-7890-abcd-ef1234567890" },
+              "rol": { "S": "PENSIONADO" },
+              "productName": { "S": "PENSION_VEJEZ" },
+              "paymentFrequency": { "S": "MENSUAL" }
+            }
+          },
+          "ingresos": {
+            "M": {
+              "additionalIncomeLocal": { "N": "0" },
+              "incomes": {
+                "L": [
+                  {
+                    "M": {
+                      "incomeId": { "S": "ING-001" },
+                      "type": { "S": "MESADA PENSIONAL" },
+                      "participationType": { "S": "PORCENTAJE" },
+                      "participationPercentage": { "N": "50.0" },
+                      "baseParticipationValue": { "N": "1700000" },
+                      "grossParticipationValue": { "N": "850000" },
+                      "exchangeRate": { "N": "1.0" },
+                      "numberOfPayments": { "N": "1" },
+                      "actualPaymentNumber": { "N": "1" },
+                      "startDate": { "S": "2026-02-01T00:00:00Z" },
+                      "endDate": { "S": "2026-02-28T23:59:59Z" }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "deduccionesSeguridadSocial": {
+            "L": [
+              {
+                "M": {
+                  "type": { "S": "EPS" },
+                  "deductionId": { "S": "DED-EPS-001" },
+                  "status": { "S": "ACTIVE" },
+                  "numberOfPayments": { "N": "12" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "exchangeRate": { "N": "1.0" }
+                }
+              },
+              {
+                "M": {
+                  "type": { "S": "AFP" },
+                  "deductionId": { "S": "DED-AFP-001" },
+                  "status": { "S": "ACTIVE" },
+                  "numberOfPayments": { "N": "12" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "exchangeRate": { "N": "1.0" }
+                }
+              }
+            ]
+          },
+          "deduccionesNegocio": {
+            "L": [
+              {
+                "M": {
+                  "deductionId": { "S": "DED-LIB-001" },
+                  "type": { "S": "LIBRANZA" },
+                  "participantType": { "S": "VALOR" },
+                  "percentage": { "NULL": true },
+                  "value": { "N": "400000" },
+                  "exchangeRate": { "N": "1.0" },
+                  "numberOfPayments": { "N": "1" },
+                  "actualPaymentNumber": { "N": "1" },
+                  "isAdditional": { "BOOL": false }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "M": {
+          "participante": {
+            "M": {
+              "idParticipante": { "S": "PART-002" },
+              "idSolicitudPago": { "S": "b7c3d2e1-f456-7890-abcd-ef1234567890" },
+              "rol": { "S": "PENSIONADO" },
+              "productName": { "S": "PENSION_VEJEZ" },
+              "paymentFrequency": { "S": "MENSUAL" }
+            }
+          },
+          "ingresos": {
+            "M": {
+              "additionalIncomeLocal": { "N": "200000" },
+              "incomes": {
+                "L": [
+                  {
+                    "M": {
+                      "incomeId": { "S": "ING-002" },
+                      "type": { "S": "MESADA PENSIONAL" },
+                      "participationType": { "S": "PORCENTAJE" },
+                      "participationPercentage": { "N": "100.0" },
+                      "baseParticipationValue": { "N": "3500000" },
+                      "grossParticipationValue": { "N": "3500000" },
+                      "exchangeRate": { "N": "1.0" },
+                      "numberOfPayments": { "N": "1" },
+                      "actualPaymentNumber": { "N": "1" },
+                      "startDate": { "S": "2026-02-01T00:00:00Z" },
+                      "endDate": { "S": "2026-02-28T23:59:59Z" }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "deduccionesSeguridadSocial": {
+            "L": [
+              {
+                "M": {
+                  "type": { "S": "EPS" },
+                  "deductionId": { "S": "DED-EPS-002" },
+                  "status": { "S": "ACTIVE" },
+                  "numberOfPayments": { "N": "12" },
+                  "actualPaymentNumber": { "N": "3" },
+                  "exchangeRate": { "N": "1.0" }
+                }
+              },
+              {
+                "M": {
+                  "type": { "S": "AFP" },
+                  "deductionId": { "S": "DED-AFP-002" },
+                  "status": { "S": "ACTIVE" },
+                  "numberOfPayments": { "N": "12" },
+                  "actualPaymentNumber": { "N": "3" },
+                  "exchangeRate": { "N": "1.0" }
+                }
+              }
+            ]
+          },
+          "deduccionesNegocio": {
+            "L": []
+          }
+        }
+      }
+    ]
+  },
+  "sla": {
+    "M": {
+      "slaLiquidationControl": { "N": "24" },
+      "slaNewsCloseness": { "N": "48" },
+      "slaDispersionConfirmation": { "N": "72" },
+      "slaDispersionControl": { "N": "24" }
+    }
+  },
+  "holidays": {
+    "L": [
+      { "S": "2026-02-09T00:00:00" },
+      { "S": "2026-03-23T00:00:00" },
+      { "S": "2026-04-02T00:00:00" },
+      { "S": "2026-04-03T00:00:00" }
+    ]
+  },
+  "defaultPaymentDatesPerProduct": {
+    "M": {
+      "PENSION_VEJEZ": {
+        "M": {
+          "2026-02": { "S": "2026-02-20T00:00:00" },
+          "2026-03": { "S": "2026-03-20T00:00:00" },
+          "2026-04": { "S": "2026-04-20T00:00:00" },
+          "2026-05": { "S": "2026-05-20T00:00:00" },
+          "2026-06": { "S": "2026-06-22T00:00:00" },
+          "2026-07": { "S": "2026-07-20T00:00:00" },
+          "2026-08": { "S": "2026-08-20T00:00:00" },
+          "2026-09": { "S": "2026-09-21T00:00:00" },
+          "2026-10": { "S": "2026-10-20T00:00:00" },
+          "2026-11": { "S": "2026-11-20T00:00:00" },
+          "2026-12": { "S": "2026-12-21T00:00:00" }
+        }
+      },
+      "PENSION_INVALIDEZ": {
+        "M": {
+          "2026-02": { "S": "2026-02-25T00:00:00" },
+          "2026-03": { "S": "2026-03-25T00:00:00" },
+          "2026-04": { "S": "2026-04-24T00:00:00" },
+          "2026-05": { "S": "2026-05-25T00:00:00" },
+          "2026-06": { "S": "2026-06-25T00:00:00" },
+          "2026-07": { "S": "2026-07-24T00:00:00" },
+          "2026-08": { "S": "2026-08-25T00:00:00" },
+          "2026-09": { "S": "2026-09-25T00:00:00" },
+          "2026-10": { "S": "2026-10-23T00:00:00" },
+          "2026-11": { "S": "2026-11-25T00:00:00" },
+          "2026-12": { "S": "2026-12-24T00:00:00" }
+        }
+      }
+    }
+  }
+}

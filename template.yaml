@@ -31,6 +31,23 @@ Parameters:
     Type: String
     Description: ARN de la Lambda de calculo de capacidad de endeudamiento
 
+  LambdaCalculoFechaPagoArn:
+    Type: String
+    Description: ARN de la Lambda de calculo de fecha de pago
+
+  LambdaEscrituraDynamoArn:
+    Type: String
+    Description: ARN de la Lambda de escritura a DynamoDB
+
+  LambdaLecturaChunkArn:
+    Type: String
+    Description: ARN de la Lambda de lectura de chunks
+
+  StepfunctionLiquidationResponseQueueUrl:
+    Type: String
+    Description: URL de la SQS para respuestas de liquidacion
+
+
 Resources:
   StepFunctionsExecutionRole:
     Type: AWS::IAM::Role
@@ -57,6 +74,18 @@ Resources:
                   - !Ref LambdaCalculoSeguridadSocialArn
                   - !Ref LambdaCalculoOtrasDeduccionesArn
                   - !Ref LambdaCalculoCapacidadEndeudamientoArn
+                  - !Ref LambdaCalculoFechaPagoArn
+                  - !Ref LambdaEscrituraDynamoArn
+                  - !Ref LambdaLecturaChunkArn
+        - PolicyName: SendSQSMessagePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource:
+                  - !Ref StepfunctionLiquidationResponseQueueArn
         - PolicyName: CloudWatchLogsPolicy
           PolicyDocument:
             Version: '2012-10-17'
@@ -90,6 +119,10 @@ Resources:
         LambdaCalculoSeguridadSocialArn: !Ref LambdaCalculoSeguridadSocialArn
         LambdaCalculoOtrasDeduccionesArn: !Ref LambdaCalculoOtrasDeduccionesArn
         LambdaCalculoCapacidadEndeudamientoArn: !Ref LambdaCalculoCapacidadEndeudamientoArn
+        LambdaCalculoFechaPagoArn: !Ref LambdaCalculoFechaPagoArn
+        LambdaEscrituraDynamoArn: !Ref LambdaEscrituraDynamoArn
+        LambdaLecturaChunkArn: !Ref LambdaLecturaChunkArn
+        StepfunctionLiquidationResponseQueueUrl: !Ref StepfunctionLiquidationResponseQueueUrl
       Role: !GetAtt StepFunctionsExecutionRole.Arn
       Logging:
         Level: ALL

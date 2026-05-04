@@ -1,10 +1,14 @@
 {
+  "workflowType": "single",
   "idTraza": "TXN-2026-02-02-001",
   "periodoLiquidacion": "2026-02",
+    "valorBrutoPagoProgramado": 0,
 
   "participante": {
     "idParticipante": "rtfjk",
     "idSolicitudPago": "afedd",
+    "compania": "ASEGURADORA EJEMPLO S.A.",
+    "idPersona": 12345,
     "periodicidad": "MENSUAL",
     "rol": "PENSIONADO",
     "esPensionRegular": true
@@ -25,11 +29,8 @@
   },
 
   "ingresos": {
-    "traceId": "TXN-2026-02-02-001",
-    "liquidationPeriod": "2026-02",
-    "formula": "originValue * exchangeRate / numberOfPayments",
-    "additionalIncomeLocal": 0,
-    "incomes": [
+    "ingresoAdicionalLocal": 0,
+    "ingresos": [
       {
         "incomeId": "ING-001",
         "type": "MESADA_PENSIONAL",
@@ -66,7 +67,20 @@
       "status": "ACTIVE",
       "numberOfPayments": 12,
       "actualPaymentNumber": 1,
-      "exchangeRate": 1.0
+      "exchangeRate": 1.0,
+      "nombre": "EPS",
+      "tipoDeduccion": "PORCENTAJE",
+      "moneda": "COP",
+      "periodicidad": "MENSUAL",
+      "frecuencia": null,
+      "cantidadPagos": null,
+      "estadoDeduccion": "ACTIVA",
+      "fechaInicio": "2026-01-01",
+      "fechaFin": null,
+      "numeroDocumentoTercero": null,
+      "tipoDocumentoTercero": null,
+      "esAdicional": false,
+      "idReferenciaExterna": null
     },
     {
       "type": "AFP",
@@ -74,7 +88,20 @@
       "status": "ACTIVE",
       "numberOfPayments": 12,
       "actualPaymentNumber": 1,
-      "exchangeRate": 1.0
+      "exchangeRate": 1.0,
+      "nombre": "AFP",
+      "tipoDeduccion": "PORCENTAJE",
+      "moneda": "COP",
+      "periodicidad": "MENSUAL",
+      "frecuencia": null,
+      "cantidadPagos": null,
+      "estadoDeduccion": "ACTIVA",
+      "fechaInicio": "2026-01-01",
+      "fechaFin": null,
+      "numeroDocumentoTercero": null,
+      "tipoDocumentoTercero": null,
+      "esAdicional": false,
+      "idReferenciaExterna": null
     }
   ],
 
@@ -88,9 +115,23 @@
       "exchangeRate": 1.0,
       "numberOfPayments": 1,
       "actualPaymentNumber": 1,
-      "isAdditional": false
+      "isAdditional": false,
+      "nombre": "Libranza Banco Popular",
+      "tipoDeduccion": "VALOR",
+      "moneda": "COP",
+      "periodicidad": "MENSUAL",
+      "frecuencia": "1CADAMES",
+      "cantidadPagos": 36,
+      "estadoDeduccion": "ACTIVA",
+      "fechaInicio": "2025-06-01",
+      "fechaFin": "2028-06-01",
+      "numeroDocumentoTercero": null,
+      "tipoDocumentoTercero": null,
+      "idReferenciaExterna": "DED-LIB-001"
     }
   ],
+
+  "pagosAdicionales": [],
 
   "parametrosSeguridadSocial": {
     "EPS": {
@@ -127,7 +168,5 @@
       "smmlvMax": 4.0,
       "rounding": 100.0
     }
-  },
-
-  "estado": "PENDING"
+  }
 }
